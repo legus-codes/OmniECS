@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omniecs"
+version = "0.1.0"
+description = "A lightweight, modular, and extensible Entity-Component-System framework."
+authors = [{ name = "Matheus Brenner Lehmann", email = "legus.codes@gmail.com" }]
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7.0", "pytest-cov"]
