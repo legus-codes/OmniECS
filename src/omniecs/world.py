@@ -102,6 +102,15 @@ class WorldFactory:
 
     @staticmethod
     def create_world() -> World:
+        world = WorldFactory.create_empty_world()        
+        world.register_system(ClearRenderQueueSystem(), ExecutionStage.reset)
+        world.register_system(ClearEventSystem(), ExecutionStage.cleanup)
+        world.register_system(ClearTemporaryComponentSystem(), ExecutionStage.cleanup)
+        
+        return world
+
+    @staticmethod
+    def create_empty_world() -> World:
         entity_manager = EntityManager()
         component_manager = ComponentManager()
         system_manager = SystemManager()
@@ -109,9 +118,4 @@ class WorldFactory:
         event_manager = EventManager()
         render_manager = RenderManager()
 
-        world = World(entity_manager, component_manager, system_manager, resource_manager, event_manager, render_manager)
-        world.register_system(ClearRenderQueueSystem(), ExecutionStage.reset)
-        world.register_system(ClearEventSystem(), ExecutionStage.cleanup)
-        world.register_system(ClearTemporaryComponentSystem(), ExecutionStage.cleanup)
-        
-        return world
+        return World(entity_manager, component_manager, system_manager, resource_manager, event_manager, render_manager)
