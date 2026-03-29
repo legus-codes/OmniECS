@@ -27,6 +27,7 @@ class Resource: ...
 class Event: ...
 
 
+@dataclass
 class DrawCommandProtocol(Protocol):
     layer: int
 
