@@ -70,7 +70,7 @@ class World:
     def unregister_system(self, system_type: type[System]) -> None:
         self._systems.remove(system_type)
 
-    def execute(self, delta_time: float) -> None:
+    def execute(self, delta_time: float = 0) -> None:
         self._systems.execute(delta_time)
 
     def set_resource(self, resource: Resource) -> None:
