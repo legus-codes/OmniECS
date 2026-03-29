@@ -27,9 +27,10 @@ class Resource: ...
 class Event: ...
 
 
-@dataclass
-class DrawCommandProtocol(Protocol):
-    layer: int
+@dataclass(kw_only=True)
+class DrawCommand:
+    global_layer: int
+    local_layer: int = 0
 
 
 R = TypeVar("R", bound=Resource)

@@ -1,6 +1,6 @@
 from omniecs.managers import ComponentManager, EntityManager, EventManager, RenderManager, ResourceManager, SystemManager
 from omniecs.system import System
-from omniecs.types import Component, DrawCommandProtocol, Event, Resource
+from omniecs.types import Component, DrawCommand, Event, Resource
 from omniecs.world import WorldFactory
 
 
@@ -17,8 +17,7 @@ class MockResource(Resource): ...
 
 class MockEvent(Event): ...
 
-class MockDrawCommand(DrawCommandProtocol):
-    layer: int = 0
+class MockDrawCommand(DrawCommand): ...
 
 def test_world_has_all_managers():
     world = WorldFactory.create_world()
@@ -127,7 +126,7 @@ def test_push_events():
 
 def test_add_draw_commands():
     world = WorldFactory.create_world()
-    draw_command = MockDrawCommand()
+    draw_command = MockDrawCommand(global_layer=1)
     world.add_draw_command(draw_command)
     world.add_draw_command(draw_command)
     world.add_draw_command(draw_command)

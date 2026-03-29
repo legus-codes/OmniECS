@@ -2,7 +2,7 @@ from typing import Iterable
 
 from omniecs.managers import ComponentManager, EntityManager, EventManager, RenderManager, ResourceManager, SystemManager
 from omniecs.system import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem, System
-from omniecs.types import R, Component, Cs, DrawCommandProtocol, EntityId, Event, ExecutionStage, Resource
+from omniecs.types import R, Component, Cs, DrawCommand, EntityId, Event, ExecutionStage, Resource
 
 
 class World:
@@ -88,10 +88,10 @@ class World:
     def clear_events(self) -> None:
         self._events.clear()
 
-    def add_draw_command(self, draw_command: DrawCommandProtocol) -> None:
+    def add_draw_command(self, draw_command: DrawCommand) -> None:
         self._render.push(draw_command)
 
-    def get_draw_commands(self ) -> list[DrawCommandProtocol]:
+    def get_draw_commands(self ) -> list[DrawCommand]:
         return self._render.get()
     
     def clear_draw_commands(self) -> None:

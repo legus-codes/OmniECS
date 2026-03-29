@@ -3,7 +3,7 @@ from itertools import chain, count
 from typing import Iterable
 
 from omniecs.system import System
-from omniecs.types import R, Component, Cs, DrawCommandProtocol, EntityId, Event, ExecutionStage, Resource
+from omniecs.types import R, Component, Cs, DrawCommand, EntityId, Event, ExecutionStage, Resource
 
 
 class EntityManager:
@@ -172,13 +172,13 @@ class EventManager:
 class RenderManager:
 
     def __init__(self):
-        self._queue: list[DrawCommandProtocol] = []
+        self._queue: list[DrawCommand] = []
 
-    def push(self, command: DrawCommandProtocol) -> None:
+    def push(self, command: DrawCommand) -> None:
         self._queue.append(command)
 
-    def get(self) -> list[DrawCommandProtocol]:
-        return sorted(self._queue, key=lambda c: c.layer)
+    def get(self) -> list[DrawCommand]:
+        return sorted(self._queue, key=lambda c: (c.global_layer, c.local_layer))
     
     def clear(self) -> None:
         self._queue.clear()
