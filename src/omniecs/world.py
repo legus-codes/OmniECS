@@ -1,5 +1,6 @@
 from typing import Iterable
 
+from omniecs.components import Spawned
 from omniecs.managers import ComponentManager, EntityManager, EventManager, RenderManager, ResourceManager, SystemManager
 from omniecs.system import ClearEventSystem, ClearRenderQueueSystem, ClearTemporaryComponentSystem, System
 from omniecs.types import R, Component, Cs, DrawCommand, EntityId, Event, ExecutionStage, Resource
@@ -26,17 +27,24 @@ class World:
         entity_id = self._entities.create()
         for component in components:
             self.add_component(entity_id, component)
+        self.add_component(entity_id, Spawned())
         return entity_id
 
     def destroy(self, entity_id: EntityId) -> None:
         self._components.destroy(entity_id)
         self._entities.destroy(entity_id)
 
+    def exists(self, entity_id: EntityId) -> bool:
+        return self._entities.exists(entity_id)
+
     def add_component(self, entity_id: EntityId, component: Component) -> None:
         self._components.add(entity_id, component)
 
     def remove_component(self, entity_id: EntityId, component_type: type[Component]) -> None:
         self._components.remove(entity_id, component_type)
+
+    def get_component(self, entity_id: EntityId, component_type: type[Component]) -> Component | None:
+        return self._components.get(entity_id, component_type)
 
     def remove_all(self, component_type: type[Component]) -> None:
         self._components.remove_all(component_type)
@@ -60,7 +68,7 @@ class World:
     def register_temporary_component(self, component_type: type[Component]) -> None:
         self._components.register_temporary_component(component_type)
 
-    def get_temporary_components(self) -> list[type[Component]]:
+    def get_temporary_components(self) -> set[type[Component]]:
         return self._components.get_temporary_components()
     
     def register_system(self, system: System, stage: ExecutionStage=ExecutionStage.update) -> None:
@@ -106,6 +114,7 @@ class WorldFactory:
         world.register_system(ClearRenderQueueSystem(), ExecutionStage.reset)
         world.register_system(ClearEventSystem(), ExecutionStage.cleanup)
         world.register_system(ClearTemporaryComponentSystem(), ExecutionStage.cleanup)
+        world.register_temporary_component(Spawned)
         
         return world
 

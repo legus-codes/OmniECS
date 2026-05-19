@@ -49,7 +49,7 @@ class ComponentManager:
 
     def __init__(self):
         self._component_storage: dict[type[Component], ComponentStorage[Component]] = defaultdict(ComponentStorage)
-        self._temporary_components: list[type[Component]] = []
+        self._temporary_components: set[type[Component]] = set()
 
     def add(self, entity_id: EntityId, component: Component) -> None:
         self._component_storage[type(component)].add(entity_id, component)
@@ -66,6 +66,9 @@ class ComponentManager:
 
     def has(self, entity_id: EntityId, component_type: type[Component]) -> bool:
         return component_type in self._component_storage and self._component_storage[component_type].has(entity_id)
+    
+    def get(self, entity_id: EntityId, component_type: type[Component]) -> Component | None:
+        return self._component_storage[component_type].get(entity_id)
 
     def query_entities(self,
                        all_of: tuple[type[Component], ...] = (),
@@ -84,13 +87,13 @@ class ComponentManager:
                 return entities
 
         if any_of:
-            candidates = set.union(*(self._component_storage[c].entities() for c in any_of if c in self._component_storage))
+            candidates = set.union(*(self._component_storage[c].entities() for c in any_of))
             entities.intersection_update(candidates)
             if not entities:
                 return entities
 
         if none_of:
-            candidates = set.union(*(self._component_storage[c].entities() for c in none_of if c in self._component_storage))
+            candidates = set.union(*(self._component_storage[c].entities() for c in none_of))
             entities.difference_update(candidates)
 
         return entities
@@ -108,9 +111,9 @@ class ComponentManager:
             yield entity, components
 
     def register_temporary_component(self, component_type: type[Component]) -> None:
-        self._temporary_components.append(component_type)
+        self._temporary_components.add(component_type)
 
-    def get_temporary_components(self) -> list[type[Component]]:
+    def get_temporary_components(self) -> set[type[Component]]:
         return self._temporary_components
 
 
